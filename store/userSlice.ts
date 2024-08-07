@@ -1,12 +1,10 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 
 interface UserState {
-  token: string | null;
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
 }
 
 const initialState: UserState = {
-  token: null,
   status: 'idle',
 };
 
@@ -17,16 +15,14 @@ const userSlice = createSlice({
     loginStart(state) {
       state.status = 'loading';
     },
-    loginSuccess(state, action: PayloadAction<string>) {
+    loginSuccess(state) {
       state.status = 'succeeded';
-      state.token = action.payload;
     },
     loginFailure(state) {
       state.status = 'failed';
     },
     logout(state) {
       state.status = 'idle';
-      state.token = null;
     },
   },
 });

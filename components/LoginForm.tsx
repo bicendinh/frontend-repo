@@ -1,11 +1,7 @@
-"use client";
-
 import React, { useState } from "react";
-import { useAppDispatch } from "../store/store";
-import { loginStart, loginSuccess, loginFailure } from "../store/userSlice";
-import { auth } from "../config/firebaseConfig";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { loginStart, loginFailure, loginSuccess } from "../store/userSlice";
 import { Box, TextField, Button, Typography } from "@mui/material";
+import { useAppDispatch } from "@/store/hooks";
 
 const LoginForm: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -14,16 +10,19 @@ const LoginForm: React.FC = () => {
 
   const handleLogin = async () => {
     dispatch(loginStart());
-    try {
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-      const token = await userCredential.user.getIdToken();
-      dispatch(loginSuccess(token));
-    } catch (error) {
+    const res = await fetch("/api/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
+    if (res.ok) {
+      const data = await res.json();
+      dispatch(loginSuccess());
+      window.location.pathname = "/";
+    } else {
+      const errorData = await res.json();
       dispatch(loginFailure());
+      console.error("Error logging in:", errorData.error);
     }
   };
 
