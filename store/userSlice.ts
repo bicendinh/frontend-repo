@@ -1,31 +1,38 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { User } from "@/utils/types";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface UserState {
-  status: 'idle' | 'loading' | 'succeeded' | 'failed';
+  status: "idle" | "loading" | "succeeded" | "failed";
+  users: User[];
 }
 
 const initialState: UserState = {
-  status: 'idle',
+  status: "idle",
+  users: [],
 };
 
 const userSlice = createSlice({
-  name: 'user',
+  name: "user",
   initialState,
   reducers: {
     loginStart(state) {
-      state.status = 'loading';
+      state.status = "loading";
     },
     loginSuccess(state) {
-      state.status = 'succeeded';
+      state.status = "succeeded";
     },
     loginFailure(state) {
-      state.status = 'failed';
+      state.status = "failed";
     },
     logout(state) {
-      state.status = 'idle';
+      state.status = "idle";
+    },
+    setUsers(state, action: PayloadAction<User[]>) {
+      state.users = action.payload;
     },
   },
 });
 
-export const { loginStart, loginSuccess, loginFailure, logout } = userSlice.actions;
+export const { loginStart, loginSuccess, loginFailure, logout, setUsers } =
+  userSlice.actions;
 export default userSlice.reducer;
